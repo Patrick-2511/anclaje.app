@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Anclaje — Patrick</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0D1117">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Anclaje">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+:root {
+  --bg:         #0D1117;
+  --bg2:        #161B22;
+  --bg3:        #1C2230;
+  --glass:      rgba(255,255,255,0.04);
+  --glass-b:    rgba(255,255,255,0.08);
+  --text:       #F0EFF8;
+  --text-sec:   #8B8FA8;
+  --text-muted: #4A4E65;
+  --indigo:     #6366F1;
+  --indigo-l:   #818CF8;
+  --indigo-d:   #4338CA;
+  --lavender:   #C7D2FE;
+  --violet:     #A78BFA;
+  --emerald:    #34D399;
+  --amber:      #FBBF24;
+  --rose:       #F87171;
+  --radius-sm:  6px;
+  --radius:     12px;
+  --radius-lg:  20px;
+  --orb-color:  #6366F1;
+  font-size: 15px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── ORB BACKGROUND ── */
+.orb-wrap {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.18;
+  transition: background 1.2s ease, transform 1.2s ease;
+}
+.orb-1 {
+  width: 500px; height: 500px;
+  top: -120px; left: -100px;
+  background: var(--indigo);
+  animation: floatA 8s ease-in-out infinite;
+}
+.orb-2 {
+  width: 350px; height: 350px;
+  bottom: -80px; right: -60px;
+  background: var(--violet);
+  animation: floatB 10s ease-in-out infinite;
+}
+.orb-3 {
+  width: 220px; height: 220px;
+  top: 45%; left: 55%;
+  background: var(--emerald);
+  opacity: 0.08;
+  animation: floatC 12s ease-in-out infinite;
+}
+@keyframes floatA { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,20px)} }
+@keyframes floatB { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,-30px)} }
+@keyframes floatC { 0%,100%{transform:translate(0,0)} 50%{transform:translate(15px,-15px)} }
+
+/* ── LAYOUT ── */
+.shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+@media(max-width:700px){
+  .shell { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  .sidebar {
+    order: 2;
+    flex-direction: row;
+    height: auto;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+    border-right: none;
+    border-top: 1px solid var(--glass-b);
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 50;
+    background: rgba(13,17,23,0.92);
+  }
+  .sidebar-top, .sidebar-bottom { display: none; }
+  .nav-items { flex-direction: row; gap: 4px; width: 100%; justify-content: space-around; }
+  .nav-item { flex-direction: column; gap: 4px; padding: 8px 4px; flex: 1; }
+  .nav-item .nav-icon { width: 26px; height: 26px; font-size: 14px; }
+  .nav-label { font-size: 10px; }
+  .main { order: 1; padding: 24px 16px 100px; }
+  .page-title { font-size: 24px; }
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 16px;
+  border-right: 1px solid var(--glass-b);
+  backdrop-filter: blur(12px);
+  background: rgba(13,17,23,0.6);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  gap: 8px;
+}
+.sidebar-top { margin-bottom: 24px; padding: 0 8px; }
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.logo-mark {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--indigo), var(--violet));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(99,102,241,0.4);
+}
+.logo-text { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.logo-sub { font-size: 11px; color: var(--text-muted); padding-left: 46px; margin-top: -2px; }
+.sidebar-date {
+  margin-top: 20px;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 8px 10px;
+  background: var(--glass);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-b);
+}
+.sidebar-date strong { color: var(--text-sec); display: block; font-size: 13px; margin-bottom: 2px; }
+
+.nav-items { display: flex; flex-direction: column; gap: 4px; }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: var(--text-sec);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.18s;
+  border: 1px solid transparent;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+.nav-item:hover { background: var(--glass); color: var(--text); }
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(167,139,250,0.1));
+  border-color: rgba(99,102,241,0.3);
+  color: var(--lavender);
+}
+.nav-icon {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  background: var(--glass);
+  transition: all 0.18s;
+}
+.nav-item.active .nav-icon { background: rgba(99,102,241,0.25); }
+.nav-label { font-size: 13px; }
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 12px 10px;
+  border-radius: var(--radius);
+  background: var(--glass);
+  border: 1px solid var(--glass-b);
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.sidebar-bottom strong { color: var(--text-sec); display: block; margin-bottom: 3px; }
+
+/* ── MAIN ── */
+.main { padding: 36px 40px 60px; max-width: 760px; }
+
+.page-header { margin-bottom: 28px; }
+.page-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--indigo-l);
+  margin-bottom: 6px;
+}
+.page-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+.page-sub { font-size: 14px; color: var(--text-sec); margin-top: 6px; }
+
+/* ── SECCIONES ── */
+.seccion { display: none; animation: fadeIn 0.25s ease; }
+.seccion.visible { display: block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── GRID ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } }
+
+/* ── CARDS ── */
+.card {
+  background: var(--glass);
+  border: 1px solid var(--glass-b);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: rgba(99,102,241,0.2); }
+.card.full { grid-column: 1 / -1; }
+.card-eyebrow {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title .badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(99,102,241,0.2);
+  color: var(--lavender);
+}
+.card-desc { font-size: 13px; color: var(--text-sec); margin-bottom: 16px; line-height: 1.6; }
+
+/* ── BOTONES TÉCNICA ── */
+.tecnicas { display: flex; flex-direction: column; gap: 8px; }
+.btn-tec {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-b);
+  background: rgba(255,255,255,0.03);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s;
+  width: 100%;
+}
+.btn-tec:hover {
+  background: rgba(99,102,241,0.12);
+  border-color: rgba(99,102,241,0.35);
+  color: var(--lavender);
+  transform: translateX(3px);
+}
+.btn-tec-icon {
+  width: 34px; height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--glass);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+  border: 1px solid var(--glass-b);
+}
+.btn-tec-info { flex: 1; }
+.btn-tec-label { font-size: 13px; font-weight: 500; color: inherit; }
+.btn-tec-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.btn-tec-arrow { color: var(--text-muted); font-size: 14px; }
+
+/* ── FRASES ── */
+.frases-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.frase-item {
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-b);
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+  transition: all 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.frase-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--indigo);
+  opacity: 0;
+  transition: opacity 0.2s;
+  border-radius: 2px;
+}
+.frase-item:hover, .frase-item.sel { border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.06); }
+.frase-item:hover::before, .frase-item.sel::before { opacity: 1; }
+.frase-texto { font-size: 13px; color: var(--text); font-style: italic; line-height: 1.6; }
+.frase-tag { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-style: normal; }
+
+/* ── STAT ROW ── */
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.stat-box {
+  background: var(--glass);
+  border: 1px solid var(--glass-b);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+.stat-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--indigo-l), var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-lbl { font-size: 11px; color: var(--text-muted); }
+
+/* ── HÁBITOS ── */
+.habito-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-b);
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+  transition: all 0.18s;
+  margin-bottom: 7px;
+  width: 100%;
+  text-align: left;
+}
+.habito-item:hover { border-color: rgba(99,102,241,0.3); }
+.habito-item.done {
+  background: rgba(52,211,153,0.06);
+  border-color: rgba(52,211,153,0.25);
+}
+.habito-check {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  border: 1.5px solid var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: all 0.18s;
+}
+.habito-item.done .habito-check {
+  background: var(--emerald);
+  border-color: var(--emerald);
+}
+.habito-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.habito-item.done .habito-name { text-decoration: line-through; color: var(--text-muted); }
+.habito-icon { font-size: 16px; }
+
+/* ── DIARIO ── */
+.humor-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+.chip {
+  padding: 7px 14px;
+  border-radius: 30px;
+  border: 1px solid var(--glass-b);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-sec);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chip:hover { border-color: rgba(99,102,241,0.3); color: var(--text); }
+.chip.sel { background: rgba(99,102,241,0.2); border-color: rgba(99,102,241,0.5); color: var(--lavender); }
+
+.diario-ta {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--glass-b);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  transition: border-color 0.18s;
+  margin-bottom: 10px;
+}
+.diario-ta:focus { outline: none; border-color: rgba(99,102,241,0.5); }
+.diario-ta::placeholder { color: var(--text-muted); }
+
+.btn-save {
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--radius);
+  border: none;
+  background: linear-gradient(135deg, var(--indigo), var(--violet));
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.18s, transform 0.18s;
+  letter-spacing: 0.2px;
+}
+.btn-save:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.entradas-stack { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.entrada-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--glass-b);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  position: relative;
+}
+.entrada-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.entrada-fecha { font-size: 11px; color: var(--text-muted); }
+.entrada-humor { font-size: 12px; background: rgba(99,102,241,0.15); padding: 2px 8px; border-radius: 20px; color: var(--lavender); }
+.entrada-texto { font-size: 13px; color: var(--text-sec); line-height: 1.6; }
+.btn-del { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 12px; transition: color 0.15s; }
+.btn-del:hover { color: var(--rose); }
+
+/* ── MODAL ── */
+.modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-bg.open { display: flex; }
+
+.modal {
+  background: var(--bg2);
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 20px;
+  padding: 28px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+  animation: modalIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes modalIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
+
+.modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.modal-title { font-family: 'Syne', sans-serif; font-size: 19px; font-weight: 800; color: var(--text); line-height: 1.2; }
+.modal-close { background: var(--glass); border: 1px solid var(--glass-b); color: var(--text-sec); width: 32px; height: 32px; border-radius: var(--radius-sm); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.modal-close:hover { background: rgba(248,113,113,0.15); color: var(--rose); }
+
+.modal-progress-track { height: 3px; background: var(--glass-b); border-radius: 2px; margin-bottom: 20px; }
+.modal-progress-fill { height: 100%; background: linear-gradient(90deg, var(--indigo), var(--violet)); border-radius: 2px; transition: width 0.4s ease; }
+
+.modal-step-num { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; font-weight: 600; }
+
+.modal-content {
+  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(167,139,250,0.06));
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: var(--radius);
+  padding: 22px;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.75;
+  text-align: center;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  white-space: pre-line;
+}
+
+.modal-footer { display: flex; gap: 10px; }
+.btn-modal-sec {
+  flex: 0 0 auto;
+  padding: 11px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-b);
+  background: transparent;
+  color: var(--text-sec);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+.btn-modal-sec:hover { background: var(--glass); color: var(--text); }
+.btn-modal-prim {
+  flex: 1;
+  padding: 11px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: linear-gradient(135deg, var(--indigo), var(--violet));
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-modal-prim:hover { opacity: 0.88; }
+
+/* ── EMPTY ── */
+.empty { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; }
+.empty-icon { font-size: 28px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="orb-wrap">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo">
+        <div class="logo-mark">🧘</div>
+        <span class="logo-text">Anclaje</span>
+      </div>
+      <div class="logo-sub">Patrick · Tarma, Perú</div>
+      <div class="sidebar-date">
+        <strong id="sb-dia">Hoy</strong>
+        <span id="sb-fecha"></span>
+      </div>
+    </div>
+
+    <div class="nav-items">
+      <button class="nav-item active" onclick="cambiarTab('trading')" id="nav-trading">
+        <div class="nav-icon">📈</div>
+        <span class="nav-label">Trading</span>
+      </button>
+      <button class="nav-item" onclick="cambiarTab('ansiedad')" id="nav-ansiedad">
+        <div class="nav-icon">🧠</div>
+        <span class="nav-label">Ansiedad</span>
+      </button>
+      <button class="nav-item" onclick="cambiarTab('diario')" id="nav-diario">
+        <div class="nav-icon">📔</div>
+        <span class="nav-label">Diario</span>
+      </button>
+      <button class="nav-item" onclick="cambiarTab('habitos')" id="nav-habitos">
+        <div class="nav-icon">✅</div>
+        <span class="nav-label">Hábitos</span>
+      </button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <strong>Recuerda</strong>
+      "El proceso importa más que el resultado de hoy."
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TRADING -->
+    <section class="seccion visible" id="sec-trading">
+      <div class="page-header">
+        <div class="page-eyebrow">XAU/USD · MetaTrader 5</div>
+        <h1 class="page-title">Estado mental<br>para operar</h1>
+        <p class="page-sub">Revisa tu estado antes de abrir una posición.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-eyebrow">Antes de abrir MT5</div>
+          <div class="card-title">Pre-sesión <span class="badge">⚠️ importante</span></div>
+          <div class="card-desc">Verifica tu estado emocional y tu plan.</div>
+          <div class="tecnicas">
+            <button class="btn-tec" onclick="abrirModal('check')">
+              <div class="btn-tec-icon">☑️</div>
+              <div class="btn-tec-info">
+                <div class="btn-tec-label">Check emocional</div>
+                <div class="btn-tec-sub">5 preguntas rápidas</div>
+              </div>
+              <span class="btn-tec-arrow">›</span>
+            </button>
+            <button class="btn-tec" onclick="abrirModal('reglas')">
+              <div class="btn-tec-icon">📋</div>
+              <div class="btn-tec-info">
+                <div class="btn-tec-label">Mis reglas de trading</div>
+                <div class="btn-tec-sub">Repaso rápido de las 5 reglas</div>
+              </div>
+              <span class="btn-tec-arrow">›</span>
+            </button>
+            <button class="btn-tec" onclick="abrirModal('respira478')">
+              <div class="btn-tec-icon">🌬️</div>
+              <div class="btn-tec-info">
+                <div class="btn-tec-label">Respiración 4-7-8</div>
+                <div class="btn-tec-sub">Calmar el sistema nervioso</div>
+              </div>
+              <span class="btn-tec-arrow">›</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-eyebrow">Después de una pérdida</div>
+          <div class="card-title">Recuperación <span class="badge">🛡️ protección</span></div>
+          <div class="card-desc">Para no operar por venganza ni impulso.</div>
+          <div class="tecnicas">
+            <button class="btn-tec" onclick="abrirModal('pausa')">
+              <div class="btn-tec-icon">⏸️</div>
+              <div class="btn-tec-info">
+                <div class="btn-tec-label">Protocolo de pausa</div>
+                <div class="btn-tec-sub">Procedimiento paso a paso</div>
+              </div>
+              <span class="btn-tec-arrow">›</span>
+            </button>
+            <button class="btn-tec" onclick="abrirModal('grounding')">
+              <div class="btn-tec-icon">⚓</div>
+              <div class="btn-tec-info">
+                <div class="btn-tec-label">Grounding 5-4-3-2-1</div>
+                <div class="btn-tec-sub">Volver al presente</div>
+              </div>
+              <span class="btn-tec-arrow">›</span>
+            </button>
+            <button class="btn-tec" onclick="abrirModal('autocompasion')">
+              <div class="btn-tec-icon">💙</div>
+              <div class="btn-tec-info">
+                <div class="btn-tec-label">Autocompasión</div>
+                <div class="btn-tec-sub">Perspectiva del trader</div>
+              </div>
+              <span class="btn-tec-arrow">›</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANSIEDAD -->
+    <section class="seccion" id="sec-ansiedad">
+      <div class="page-header">
+        <div class="page-eyebrow">Control emocional</div>
+        <h1 class="page-title">Cuando la ansiedad<br>sube</h1>
+        <p class="page-sub">Técnicas probadas. Toca la que necesitas ahora.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-eyebrow">Técnicas de emergencia</div>
+          <div class="card-title">Respuesta rápida</div>
+          <div class="card-desc">Para cuando necesitas calmar el sistema nervioso ya.</div>
+          <div class="tecnicas">
+            <button class="btn-tec" onclick="abrirModal('grounding')">
+              <div class="btn-tec-icon">⚓</div>
+              <div class="btn-tec-info">
+                <div class="btn-tec-label">Grounding 5-4-3-2-1</div>
+                <div class="btn-tec-sub">Ancla en el presente</div>
+              </div>
+              <span class="btn-tec-arrow">›</span>
+            </button>
+            <button class="btn-tec" onclick="abrirModal('box')">
+              <div class="btn-tec-icon">⬜</div>
+              <div class="btn-tec-info">
+                <div class="btn-tec-label">Respiración en caja</div>
+                <div class="btn-tec-sub">Técnica Navy SEALs</div>
+              </div>
+              <span class="btn-tec-arrow">›</span>
+            </button>
+            <button class="btn-tec" onclick="abrirModal('respira478')">
+              <div class="btn-tec-icon">🌬️</div>
+              <div class="btn-tec-info">
+                <div class="btn-tec-label">Respiración 4-7-8</div>
+                <div class="btn-tec-sub">Activa el nervio vago</div>
+              </div>
+              <span class="btn-tec-arrow">›</span>
+            </button>
+            <button class="btn-tec" onclick="abrirModal('frio')">
+              <div class="btn-tec-icon">❄️</div>
+              <div class="btn-tec-info">
+                <div class="btn-tec-label">Técnica de frío</div>
+                <div class="btn-tec-sub">Agua fría = reflejo de buceo</div>
+              </div>
+              <span class="btn-tec-arrow">›</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-eyebrow">Frases de anclaje</div>
+          <div class="card-title">Palabras que sostienen</div>
+          <div class="card-desc">Toca una para internalizarla. Léela en voz alta si puedes.</div>
+          <div class="frases-grid">
+            <div class="frase-item" onclick="this.classList.toggle('sel')">
+              <div class="frase-texto">"Esto que siento es temporal. No tengo que actuar ahora."</div>
+              <div class="frase-tag">Regulación emocional</div>
+            </div>
+            <div class="frase-item" onclick="this.classList.toggle('sel')">
+              <div class="frase-texto">"Soy capaz. He superado cosas más difíciles que esto."</div>
+              <div class="frase-tag">Autoeficacia</div>
+            </div>
+            <div class="frase-item" onclick="this.classList.toggle('sel')">
+              <div class="frase-texto">"Un paso a la vez. Hoy solo necesito avanzar un poco."</div>
+              <div class="frase-tag">Filosofía de proceso</div>
+            </div>
+            <div class="frase-item" onclick="this.classList.toggle('sel')">
+              <div class="frase-texto">"No soy mis pensamientos. Puedo elegir cómo responder."</div>
+              <div class="frase-tag">Mindfulness</div>
+            </div>
+            <div class="frase-item" onclick="this.classList.toggle('sel')">
+              <div class="frase-texto">"El discomfort de hoy es la fortaleza de mañana."</div>
+              <div class="frase-tag">Growth mindset</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIARIO -->
+    <section class="seccion" id="sec-diario">
+      <div class="page-header">
+        <div class="page-eyebrow">Espacio privado</div>
+        <h1 class="page-title">¿Cómo estás<br>ahora mismo?</h1>
+        <p class="page-sub">Nadie más verá esto. Escribe sin filtro.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Nueva entrada</div>
+        <div class="card-desc" style="margin-bottom:12px">¿Cuál es tu estado de ánimo ahora?</div>
+        <div class="humor-chips">
+          <button class="chip" onclick="selChip(this,'😰 Ansioso')">😰 Ansioso</button>
+          <button class="chip" onclick="selChip(this,'😤 Frustrado')">😤 Frustrado</button>
+          <button class="chip" onclick="selChip(this,'😐 Neutral')">😐 Neutral</button>
+          <button class="chip" onclick="selChip(this,'😌 Tranquilo')">😌 Tranquilo</button>
+          <button class="chip" onclick="selChip(this,'💪 Motivado')">💪 Motivado</button>
+          <button class="chip" onclick="selChip(this,'😴 Cansado')">😴 Cansado</button>
+        </div>
+        <textarea class="diario-ta" id="diario-texto"
+          placeholder="¿Qué está pasando en tu mente? ¿Qué sientes en el cuerpo? ¿Qué te preocupa o qué te alegra hoy?"></textarea>
+        <button class="btn-save" onclick="guardarEntrada()">Guardar entrada</button>
+      </div>
+
+      <div class="card" id="card-entradas">
+        <div class="card-title">Entradas recientes</div>
+        <div class="entradas-stack" id="lista-entradas">
+          <div class="empty"><div class="empty-icon">📭</div>Aún no hay entradas.<br>Escribe la primera.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HÁBITOS -->
+    <section class="seccion" id="sec-habitos">
+      <div class="page-header">
+        <div class="page-eyebrow">Rutina diaria</div>
+        <h1 class="page-title">Tus hábitos<br>de hoy</h1>
+        <p class="page-sub">Marca los que completaste. Se reinicia cada día.</p>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-val" id="stat-racha">0</div>
+          <div class="stat-lbl">Días de racha 🔥</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stat-hoy">0</div>
+          <div class="stat-lbl">Completados hoy</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stat-total">8</div>
+          <div class="stat-lbl">Total hábitos</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div id="lista-habitos"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal-bg" onclick="cerrarSiAfuera(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Técnica</div>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-progress-track">
+      <div class="modal-progress-fill" id="modal-prog"></div>
+    </div>
+    <div class="modal-step-num" id="modal-step-num">Paso 1 de 5</div>
+    <div class="modal-content" id="modal-content"></div>
+    <div class="modal-footer">
+      <button class="btn-modal-sec" onclick="cerrarModal()">Cerrar</button>
+      <button class="btn-modal-prim" id="btn-sig" onclick="siguientePaso()">Siguiente →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── FECHA ──
+const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const HOY = new Date();
+document.getElementById('sb-dia').textContent = DIAS[HOY.getDay()];
+document.getElementById('sb-fecha').textContent = HOY.getDate() + ' de ' + MESES[HOY.getMonth()] + ', ' + HOY.getFullYear();
+
+// ── TABS ──
+const ORB_COLORS = { trading:'#6366F1', ansiedad:'#A78BFA', diario:'#7C3AED', habitos:'#34D399' };
+function cambiarTab(tab) {
+  document.querySelectorAll('.seccion').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + tab).classList.add('visible');
+  document.getElementById('nav-' + tab).classList.add('active');
+  document.querySelector('.orb-1').style.background = ORB_COLORS[tab] || '#6366F1';
+  if (tab === 'habitos') renderHabitos();
+}
+
+// ── MODALES ──
+const MODALES = {
+  check: { titulo:'☑️ Check emocional pre-sesión', pasos:[
+    '¿Dormiste al menos 6 horas anoche?\n\nSi la respuesta es no, considera solo observar el mercado hoy, sin operar.',
+    '¿Tienes alguna emoción intensa ahora mismo?\n\nEnojo, miedo, euforia o tristeza nublan el juicio. Espera a que pase.',
+    '¿Tienes claro tu plan de hoy?\n\nDebes saber: qué buscas, en qué zona de precio y cuál es tu stop loss máximo.',
+    '¿Estás operando por necesidad urgente de dinero?\n\nSi es así, para. La presión financiera es el peor estado mental para operar.',
+    '✅ Si respondiste con honestidad y calma: puedes abrir MT5.\n\nSi dudaste en alguna: espera 30 minutos y repite el check.'
+  ]},
+  reglas: { titulo:'📋 Mis reglas de trading', pasos:[
+    '📌 SETUP\n\nSolo opero XAU/USD con setups confirmados:\nFVG, Order Block o Pullback BOS.\nSin setup claro = sin operación.',
+    '📌 GESTIÓN DE RIESGO\n\nNunca arriesgo más del 1–2% del capital por operación.\nCalculo el tamaño de lote ANTES de entrar.',
+    '📌 LÍMITE DE PÉRDIDAS\n\nSi pierdo 2 operaciones seguidas en el día:\ncierro MT5. El mercado sigue mañana.',
+    '📌 NOTICIAS\n\nNo opero 30 min antes ni después de noticias de alto impacto (rojo en Forex Factory).',
+    '📌 MENTALIDAD\n\nEl proceso importa más que el resultado de hoy.\nUna operación no define mi semana.\nUna semana no define mi mes.'
+  ]},
+  respira478: { titulo:'🌬️ Respiración 4-7-8', pasos:[
+    'Siéntate cómodo con la espalda recta.\nPon una mano sobre el pecho y otra sobre el abdomen.',
+    'INHALA por la nariz...\n\nContando lentamente: 1... 2... 3... 4\n\nSiente cómo se expande tu abdomen.',
+    'AGUANTA el aire...\n\nContando: 1... 2... 3... 4... 5... 6... 7\n\nRelaja los hombros.',
+    'EXHALA lento por la boca...\n\nContando: 1... 2... 3... 4... 5... 6... 7... 8\n\nDeja salir toda la tensión.',
+    '✅ Repite 3 o 4 veces.\n\nEsta técnica activa el nervio vago y reduce el ritmo cardíaco en menos de 2 minutos.'
+  ]},
+  pausa: { titulo:'⏸️ Protocolo de pausa', pasos:[
+    'PASO 1 — Para ahora.\n\nCierra MT5. No mires el gráfico por al menos 20 minutos.',
+    'PASO 2 — Mueve el cuerpo.\n\nLevántate. Toma agua fría. Camina en casa 2–3 minutos.',
+    'PASO 3 — Escribe en el diario.\n\n¿Qué pasó exactamente? ¿Fue un error de ejecución, de análisis, o simplemente el mercado fue en contra?',
+    'PASO 4 — Evalúa antes de volver.\n\nSi fue error tuyo: ¿qué aprenderías? Si fue el mercado: ¿respetaste tu plan? Si sí, no hay nada que reprochar.',
+    '✅ Solo vuelve si estás calmado.\n\nCuando abras MT5 de nuevo: solo observa 10 minutos antes de considerar otra operación.'
+  ]},
+  grounding: { titulo:'⚓ Grounding 5-4-3-2-1', pasos:[
+    '👁️ MIRA — 5 cosas\n\nNombra en voz alta 5 cosas que puedes ver ahora mismo. Sé específico: color, forma, tamaño.',
+    '🤚 TOCA — 4 cosas\n\nToca 4 superficies o texturas distintas.\nDescribe cómo se sienten: frío, suave, rugoso, liso.',
+    '👂 ESCUCHA — 3 sonidos\n\nCierra los ojos. ¿Qué escuchas?\nNombra 3 sonidos distintos que ocurran ahora.',
+    '👃 HUELE — 2 aromas\n\nBusca 2 cosas que puedas oler.\nSi no hueles nada, respira profundo y nota el aire.',
+    '👄 SABOREA — 1 cosa\n\n¿Qué sabor tienes en la boca ahora mismo?\n\n✅ Ya estás completamente en el presente.'
+  ]},
+  box: { titulo:'⬜ Respiración en caja', pasos:[
+    'Esta técnica la usan los Navy SEALs antes de situaciones de alto estrés.\n\nSiéntate recto. Visualiza un cuadrado.',
+    'INHALA — lado 1 del cuadrado\n\nContando: 1... 2... 3... 4\n\nLlena el abdomen primero, luego el pecho.',
+    'AGUANTA — lado 2\n\nContando: 1... 2... 3... 4\n\nNo tenses. Solo retén con calma.',
+    'EXHALA — lado 3\n\nContando: 1... 2... 3... 4\n\nVacía completamente los pulmones.',
+    'AGUANTA vacío — lado 4\n\nContando: 1... 2... 3... 4\n\n✅ Repite 4 veces. Tu sistema nervioso se habrá calmado.'
+  ]},
+  autocompasion: { titulo:'💙 Autocompasión del trader', pasos:[
+    'Perder operaciones es parte del trading.\nNingún trader profesional gana el 100% de las veces.',
+    'Repite esto en voz alta:\n\n"Esta pérdida duele. Es normal que duela.\nNo soy un fracaso por esto."',
+    '¿Qué le dirías a un amigo que acaba de perder esta operación?\n\nAhora dítelo a ti mismo con esa misma compasión.',
+    'Recuerda tu por qué:\n\nEstás aprendiendo un skill difícil que la mayoría abandona.\nCada pérdida es parte del costo de la educación.',
+    '✅ Hoy aprendiste algo.\n\nEscribe en el diario qué fue. Mañana es otro día de mercado.'
+  ]},
+  frio: { titulo:'❄️ Técnica de temperatura', pasos:[
+    'Esta técnica activa el reflejo de buceo del cuerpo, que baja el ritmo cardíaco rápidamente.',
+    'Ve al baño y abre el grifo de agua fría.',
+    'Moja tus muñecas, el interior de tus codos y tu cuello durante 30–60 segundos.',
+    'Si puedes: salpica agua fría sobre tu cara y ojos cerrados.',
+    '✅ En 60 segundos tu ritmo cardíaco habrá bajado notablemente.\n\nEs fisiología pura.'
+  ]}
+};
+
+let mKey = '', mPaso = 0;
+function abrirModal(key) {
+  mKey = key; mPaso = 0;
+  const m = MODALES[key];
+  document.getElementById('modal-title').textContent = m.titulo;
+  actualizarModal();
+  document.getElementById('modal-bg').classList.add('open');
+}
+function actualizarModal() {
+  const m = MODALES[mKey];
+  const total = m.pasos.length;
+  const pct = ((mPaso + 1) / total * 100).toFixed(1);
+  document.getElementById('modal-prog').style.width = pct + '%';
+  document.getElementById('modal-step-num').textContent = 'Paso ' + (mPaso+1) + ' de ' + total;
+  document.getElementById('modal-content').textContent = m.pasos[mPaso];
+  document.getElementById('btn-sig').textContent = mPaso < total - 1 ? 'Siguiente →' : '✅ Listo';
+}
+function siguientePaso() {
+  const m = MODALES[mKey];
+  if (mPaso < m.pasos.length - 1) { mPaso++; actualizarModal(); }
+  else cerrarModal();
+}
+function cerrarModal() { document.getElementById('modal-bg').classList.remove('open'); }
+function cerrarSiAfuera(e) { if (e.target.id === 'modal-bg') cerrarModal(); }
+
+// ── DIARIO ──
+let humorSel = '';
+const entradas = JSON.parse(localStorage.getItem('anclaje_diario') || '[]');
+
+function selChip(el, val) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  humorSel = val;
+}
+function guardarEntrada() {
+  const texto = document.getElementById('diario-texto').value.trim();
+  if (!texto) return;
+  const n = new Date();
+  const fecha = DIAS[n.getDay()] + ' ' + n.getDate() + '/' + (n.getMonth()+1) + '/' + n.getFullYear()
+    + ' · ' + n.getHours().toString().padStart(2,'0') + ':' + n.getMinutes().toString().padStart(2,'0');
+  entradas.unshift({ fecha, texto, humor: humorSel });
+  localStorage.setItem('anclaje_diario', JSON.stringify(entradas));
+  document.getElementById('diario-texto').value = '';
+  humorSel = '';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('sel'));
+  renderEntradas();
+}
+function borrarEntrada(i) {
+  if (!confirm('¿Eliminar esta entrada?')) return;
+  entradas.splice(i, 1);
+  localStorage.setItem('anclaje_diario', JSON.stringify(entradas));
+  renderEntradas();
+}
+function renderEntradas() {
+  const lista = document.getElementById('lista-entradas');
+  if (!entradas.length) {
+    lista.innerHTML = '<div class="empty"><div class="empty-icon">📭</div>Aún no hay entradas.<br>Escribe la primera.</div>';
+    return;
+  }
+  lista.innerHTML = entradas.slice(0,10).map((e,i) => `
+    <div class="entrada-card">
+      <div class="entrada-header">
+        <span class="entrada-fecha">${e.fecha}</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          ${e.humor ? `<span class="entrada-humor">${e.humor}</span>` : ''}
+          <button class="btn-del" onclick="borrarEntrada(${i})">✕ Eliminar</button>
+        </div>
+      </div>
+      <div class="entrada-texto">${e.texto}</div>
+    </div>
+  `).join('');
+}
+renderEntradas();
+
+// ── HÁBITOS ──
+const HABITOS = [
+  { id:'h1', icono:'🌅', nombre:'Rutina matutina completada' },
+  { id:'h2', icono:'📊', nombre:'Revisé el calendario económico' },
+  { id:'h3', icono:'🧘', nombre:'Ejercicio o movimiento físico' },
+  { id:'h4', icono:'📖', nombre:'Avancé en mis estudios UPECEN' },
+  { id:'h5', icono:'💹', nombre:'Sesión de trading con plan' },
+  { id:'h6', icono:'📔', nombre:'Journaling / reflexión del día' },
+  { id:'h7', icono:'🚫', nombre:'Sin redes sociales sin propósito' },
+  { id:'h8', icono:'💧', nombre:'Hidratación adecuada' }
+];
+function claveHoy() {
+  const h = new Date();
+  return h.getFullYear() + '-' + (h.getMonth()+1) + '-' + h.getDate();
+}
+function renderHabitos() {
+  const clave = 'anclaje_hab_' + claveHoy();
+  const done = JSON.parse(localStorage.getItem(clave) || '[]');
+  document.getElementById('lista-habitos').innerHTML = HABITOS.map(h => `
+    <button class="habito-item ${done.includes(h.id)?'done':''}" onclick="toggleHab('${h.id}')">
+      <div class="habito-check">${done.includes(h.id)?'✓':''}</div>
+      <span class="habito-icon">${h.icono}</span>
+      <span class="habito-name">${h.nombre}</span>
+    </button>
+  `).join('');
+  document.getElementById('stat-hoy').textContent = done.length;
+  document.getElementById('stat-total').textContent = HABITOS.length;
+  calcRacha();
+}
+function toggleHab(id) {
+  const clave = 'anclaje_hab_' + claveHoy();
+  let done = JSON.parse(localStorage.getItem(clave) || '[]');
+  done = done.includes(id) ? done.filter(x=>x!==id) : [...done, id];
+  localStorage.setItem(clave, JSON.stringify(done));
+  renderHabitos();
+}
+function calcRacha() {
+  let r = 0, d = new Date();
+  for (let i = 0; i < 365; i++) {
+    const c = 'anclaje_hab_' + d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    const done = JSON.parse(localStorage.getItem(c)||'[]');
+    if (done.length >= Math.ceil(HABITOS.length * 0.5)) { r++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  document.getElementById('stat-racha').textContent = r;
+}
+
+// ── PWA: registrar service worker ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
